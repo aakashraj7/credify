@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { API_ENDPOINTS, fetchJson } from '../config/api';
 import { getTemplateComponent } from '../templates/TemplateRegistry';
 import confetti from 'canvas-confetti';
@@ -24,6 +24,116 @@ import credifyWithoutCelestiusTextLogo from '../assets/credify-without-celestius
 import celestiusLogo from '../assets/Club_logo(compressed).png';
 import athenaImg from '../assets/athena.png';
 import hephaestusImg from '../assets/hephaestus.png';
+const AnimatedBackground: React.FC = () => {
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      setMousePos({ x: e.clientX, y: e.clientY });
+    };
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, []);
+
+  const stars = [
+    { top: '15%', left: '12%', factor: 0.04, delay: 0 },
+    { top: '25%', left: '85%', factor: -0.05, delay: 1.2 },
+    { top: '60%', left: '10%', factor: 0.03, delay: 0.5 },
+    { top: '75%', left: '88%', factor: -0.04, delay: 2 },
+    { top: '40%', left: '68%', factor: 0.06, delay: 1.8 },
+    { top: '82%', left: '35%', factor: -0.03, delay: 0.9 },
+    { top: '18%', left: '50%', factor: 0.05, delay: 1.5 },
+    { top: '88%', left: '65%', factor: -0.04, delay: 2.3 },
+  ];
+
+  return (
+    <div className="fixed inset-0 pointer-events-none overflow-hidden z-0 select-none">
+      {/* 1. Interactive Mouse-Following Spotlight Aura */}
+      <motion.div
+        animate={{
+          x: mousePos.x - 192,
+          y: mousePos.y - 192,
+        }}
+        transition={{
+          type: 'spring',
+          damping: 30,
+          stiffness: 200,
+          mass: 0.5,
+        }}
+        className="fixed w-96 h-96 bg-amber-400/25 rounded-full blur-[110px] pointer-events-none z-0"
+      />
+
+      {/* 2. Deep Atmospheric Golden Spotlights */}
+      <motion.div
+        animate={{
+          scale: [1, 1.25, 1],
+          opacity: [0.15, 0.35, 0.15],
+        }}
+        transition={{
+          duration: 10,
+          repeat: Infinity,
+          ease: 'easeInOut',
+        }}
+        className="absolute top-0 right-1/4 w-[800px] h-[800px] bg-yellow-500/18 rounded-full blur-[190px]"
+      />
+
+      <motion.div
+        animate={{
+          scale: [1.1, 1.35, 1.1],
+          opacity: [0.12, 0.3, 0.12],
+        }}
+        transition={{
+          duration: 12,
+          repeat: Infinity,
+          ease: 'easeInOut',
+          delay: 2,
+        }}
+        className="absolute bottom-0 left-1/4 w-[750px] h-[750px] bg-amber-500/18 rounded-full blur-[180px]"
+      />
+
+      {/* 3. Concentric Golden Wavy Circle Ripples */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] flex items-center justify-center">
+        {[0, 2.5, 5].map((delay, idx) => (
+          <motion.div
+            key={idx}
+            animate={{
+              scale: [0.2, 2.4],
+              opacity: [0.5, 0],
+            }}
+            transition={{
+              duration: 7.5,
+              repeat: Infinity,
+              ease: 'easeOut',
+              delay: delay,
+            }}
+            className="absolute inset-0 rounded-full border border-amber-400/35 shadow-[0_0_40px_rgba(250,204,21,0.2)]"
+          />
+        ))}
+      </div>
+
+      {/* 4. Mouse Parallax Twinkling Constellation Stars */}
+      {stars.map((star, idx) => (
+        <motion.div
+          key={idx}
+          style={{ top: star.top, left: star.left }}
+          animate={{
+            x: (mousePos.x - window.innerWidth / 2) * star.factor,
+            y: (mousePos.y - window.innerHeight / 2) * star.factor,
+            scale: [1, 1.6, 1],
+            opacity: [0.35, 0.95, 0.35],
+          }}
+          transition={{
+            x: { type: 'spring', damping: 25, stiffness: 150 },
+            y: { type: 'spring', damping: 25, stiffness: 150 },
+            scale: { duration: 3.5, repeat: Infinity, ease: 'easeInOut', delay: star.delay },
+            opacity: { duration: 3.5, repeat: Infinity, ease: 'easeInOut', delay: star.delay },
+          }}
+          className="absolute w-2.5 h-2.5 rounded-full bg-amber-300 shadow-[0_0_16px_rgba(250,204,21,1)]"
+        />
+      ))}
+    </div>
+  );
+};
 
 export const PublicCredentialPage: React.FC = () => {
   const { credentialId } = useParams<{ credentialId: string }>();
@@ -220,25 +330,72 @@ export const PublicCredentialPage: React.FC = () => {
 
     return (
       <div className="min-h-screen bg-[#09090B] text-slate-100 flex flex-col justify-center items-center p-6 relative overflow-hidden select-none">
-        {/* Background Ambient Glow Orbs */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-yellow-500/10 rounded-full blur-[180px] pointer-events-none" />
-        <div className="absolute top-10 left-10 w-96 h-96 bg-amber-500/10 rounded-full blur-[140px] pointer-events-none" />
-        <div className="absolute bottom-10 right-10 w-96 h-96 bg-yellow-500/10 rounded-full blur-[140px] pointer-events-none" />
+        <AnimatedBackground />
 
-        {/* Side Statues Background Watermarks */}
-        <div className="fixed top-1/3 -translate-y-1/2 left-4 w-36 sm:w-48 pointer-events-none opacity-20 filter drop-shadow-[0_10px_25px_rgba(250,204,21,0.2)]">
-          <img src={athenaImg} alt="Athena" className="w-full h-auto object-contain" />
-        </div>
-        <div className="fixed top-2/3 -translate-y-1/2 right-4 w-36 sm:w-48 pointer-events-none opacity-20 filter drop-shadow-[0_10px_25px_rgba(250,204,21,0.2)]">
-          <img src={hephaestusImg} alt="Hephaestus" className="w-full h-auto object-contain" />
-        </div>
+        {/* Outer Relative Container for Loading Card & Desktop Flanking Floating Statues */}
+        <div className="relative max-w-lg w-full mx-auto flex items-center justify-center">
+          {/* Left Statue: Athena */}
+          <motion.div
+            initial={{ opacity: 0, x: -50 }}
+            animate={{
+              opacity: [0.75, 0.95, 0.75],
+              x: 0,
+              y: [0, -10, 0],
+              scale: [1, 1.02, 1]
+            }}
+            transition={{
+              x: { duration: 0.8 },
+              opacity: { duration: 3.5, repeat: Infinity, ease: 'easeInOut' },
+              y: { duration: 4.2, repeat: Infinity, ease: 'easeInOut' },
+              scale: { duration: 4.2, repeat: Infinity, ease: 'easeInOut' }
+            }}
+            className="hidden xl:block absolute top-1/2 -translate-y-1/2 -left-72 2xl:-left-88 w-52 2xl:w-60 pointer-events-none select-none filter drop-shadow-[0_15px_35px_rgba(250,204,21,0.3)] z-0"
+          >
+            <img src={athenaImg} alt="Athena" className="w-full h-auto object-contain" />
+          </motion.div>
 
-        <motion.div
-          initial={{ opacity: 0, scale: 0.92, y: 20 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="w-full max-w-lg bg-zinc-950/85 backdrop-blur-3xl rounded-3xl p-8 sm:p-10 border border-amber-500/35 text-center space-y-8 shadow-[0_25px_60px_rgba(0,0,0,0.9)] shadow-amber-500/10 relative z-10 overflow-hidden"
-        >
+          {/* Right Statue: Hephaestus */}
+          <motion.div
+            initial={{ opacity: 0, x: 50 }}
+            animate={{
+              opacity: [0.75, 0.95, 0.75],
+              x: 0,
+              y: [0, -10, 0],
+              scale: [1, 1.02, 1]
+            }}
+            transition={{
+              x: { duration: 0.8 },
+              opacity: { duration: 3.5, repeat: Infinity, ease: 'easeInOut', delay: 0.5 },
+              y: { duration: 4.2, repeat: Infinity, ease: 'easeInOut', delay: 0.5 },
+              scale: { duration: 4.2, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }
+            }}
+            className="hidden xl:block absolute top-1/2 -translate-y-1/2 -right-72 2xl:-right-88 w-52 2xl:w-60 pointer-events-none select-none filter drop-shadow-[0_15px_35px_rgba(250,204,21,0.3)] z-0"
+          >
+            <img src={hephaestusImg} alt="Hephaestus" className="w-full h-auto object-contain" />
+          </motion.div>
+
+          {/* Mobile Watermark Animations for Loading */}
+          <motion.div
+            animate={{ opacity: [0.55, 0.85, 0.55] }}
+            transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+            className="xl:hidden fixed top-1/4 -translate-y-1/2 left-0 w-44 sm:w-56 pointer-events-none filter drop-shadow-[0_10px_30px_rgba(250,204,21,0.4)] z-0"
+          >
+            <img src={athenaImg} alt="Athena Watermark" className="w-full h-auto object-contain" />
+          </motion.div>
+          <motion.div
+            animate={{ opacity: [0.55, 0.85, 0.55] }}
+            transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
+            className="xl:hidden fixed top-3/4 -translate-y-1/2 right-0 w-44 sm:w-56 pointer-events-none filter drop-shadow-[0_10px_30px_rgba(250,204,21,0.4)] z-0"
+          >
+            <img src={hephaestusImg} alt="Hephaestus Watermark" className="w-full h-auto object-contain" />
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, scale: 0.92, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="w-full bg-zinc-950/25 backdrop-blur-xl rounded-3xl p-8 sm:p-10 border border-amber-500/35 text-center space-y-8 shadow-[0_25px_60px_rgba(0,0,0,0.85)] shadow-amber-500/10 relative z-10 overflow-hidden"
+          >
           {/* Top Metallic Shimmer Accent Bar */}
           <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-500/0 via-amber-400 to-amber-500/0" />
 
@@ -249,7 +406,7 @@ export const PublicCredentialPage: React.FC = () => {
             transition={{ duration: 0.6 }}
             className="flex flex-col items-center justify-center pt-2"
           >
-            <div className="relative p-4 rounded-2xl bg-zinc-900/70 border border-amber-500/30 shadow-xl shadow-amber-500/15 flex flex-row items-center gap-3">
+            <div className="relative p-4 rounded-2xl bg-zinc-950/40 backdrop-blur-md border border-amber-500/30 shadow-xl shadow-amber-500/15 flex flex-row items-center gap-3">
               <img
                 src={credifyWithoutCelestiusTextLogo}
                 alt="Credify Logo"
@@ -284,7 +441,7 @@ export const PublicCredentialPage: React.FC = () => {
             {/* Middle Fast Glowing Spinner */}
             <div className="absolute inset-1 rounded-full border-4 border-amber-500/20 border-t-[#FACC15] animate-spin drop-shadow-[0_0_15px_rgba(250,204,21,0.5)]" />
             {/* Inner Core Icon Badge */}
-            <div className="w-16 h-16 rounded-full bg-amber-500/15 border border-amber-500/50 flex items-center justify-center text-amber-300 shadow-inner">
+            <div className="w-16 h-16 rounded-full bg-amber-500/15 backdrop-blur-md border border-amber-500/50 flex items-center justify-center text-amber-300 shadow-inner">
               <CurrentStepIcon className="w-8 h-8 text-[#FACC15] animate-pulse drop-shadow-[0_0_10px_rgba(250,204,21,0.6)]" />
             </div>
           </div>
@@ -310,12 +467,12 @@ export const PublicCredentialPage: React.FC = () => {
               return (
                 <div
                   key={idx}
-                  className={`flex items-center gap-3.5 p-3.5 rounded-2xl border text-xs transition-all ${
+                  className={`flex items-center gap-3.5 p-3.5 rounded-2xl border text-xs backdrop-blur-md transition-all ${
                     isCurrent
                       ? 'bg-amber-500/20 border-amber-400 text-white font-bold shadow-lg shadow-amber-500/15'
                       : isCompleted
-                      ? 'bg-zinc-900/60 border-zinc-800 text-zinc-300'
-                      : 'bg-zinc-950/40 border-zinc-900/60 text-zinc-600'
+                      ? 'bg-zinc-950/25 border-zinc-800/80 text-zinc-300'
+                      : 'bg-zinc-950/15 border-zinc-900/60 text-zinc-600'
                   }`}
                 >
                   <StepIcon
@@ -350,44 +507,182 @@ export const PublicCredentialPage: React.FC = () => {
             </div>
           </div>
         </motion.div>
+        </div>
       </div>
     );
   }
 
   if (error || !data) {
     return (
-      <div className="min-h-screen bg-[#09090B] text-slate-100 flex flex-col items-center justify-center p-4">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="w-full max-w-md bg-zinc-900/90 backdrop-blur-2xl rounded-3xl p-8 border border-red-500/30 text-center space-y-6 shadow-2xl"
-        >
-          <div className="w-16 h-16 rounded-2xl bg-red-500/10 border border-red-500/30 flex items-center justify-center mx-auto text-red-400">
-            <AlertTriangle className="w-8 h-8" />
-          </div>
+      <div className="min-h-screen bg-[#09090B] text-slate-100 flex flex-col justify-center items-center p-6 relative overflow-hidden select-none">
+        <AnimatedBackground />
 
-          <div className="space-y-2">
-            <h1 className="text-2xl font-extrabold text-white font-['Outfit']">Invalid Credential</h1>
-            <p className="text-xs text-slate-400">
-              The Credential ID <code className="text-red-300 font-bold">{credentialId}</code> could not be verified in the Club Celestius registry database.
-            </p>
-          </div>
-
-          <div className="p-4 rounded-xl bg-zinc-950/80 border border-zinc-800 text-xs text-slate-400 text-left space-y-1">
-            <p className="font-semibold text-slate-200">Possible reasons:</p>
-            <ul className="list-disc list-inside space-y-1 text-[11px]">
-              <li>The Credential ID was mistyped or altered.</li>
-              <li>The credential was revoked by event organizers.</li>
-            </ul>
-          </div>
-
-          <Link
-            to="/login"
-            className="inline-block text-xs text-amber-400 hover:underline font-semibold"
+        {/* Outer Relative Wrapper for Error Card and Centered Flanking Statues */}
+        <div className="relative max-w-lg w-full mx-auto flex items-center justify-center">
+          {/* Left Statue: Athena (Centered vertically on left of error card) */}
+          <motion.div
+            initial={{ opacity: 0, x: -50 }}
+            animate={{
+              opacity: [0.75, 0.95, 0.75],
+              x: 0,
+              y: [0, -10, 0],
+              scale: [1, 1.02, 1]
+            }}
+            transition={{
+              x: { duration: 0.8 },
+              opacity: { duration: 3.5, repeat: Infinity, ease: 'easeInOut' },
+              y: { duration: 4.2, repeat: Infinity, ease: 'easeInOut' },
+              scale: { duration: 4.2, repeat: Infinity, ease: 'easeInOut' }
+            }}
+            className="hidden xl:block absolute top-1/2 -translate-y-1/2 -left-72 2xl:-left-88 w-52 2xl:w-60 pointer-events-none select-none filter drop-shadow-[0_15px_35px_rgba(239,68,68,0.3)] z-0"
           >
-            Organizer Login →
-          </Link>
-        </motion.div>
+            <img
+              src={athenaImg}
+              alt="Athena"
+              className="w-full h-auto object-contain"
+            />
+          </motion.div>
+
+          {/* Right Statue: Hephaestus (Centered vertically on right of error card) */}
+          <motion.div
+            initial={{ opacity: 0, x: 50 }}
+            animate={{
+              opacity: [0.75, 0.95, 0.75],
+              x: 0,
+              y: [0, -10, 0],
+              scale: [1, 1.02, 1]
+            }}
+            transition={{
+              x: { duration: 0.8 },
+              opacity: { duration: 3.5, repeat: Infinity, ease: 'easeInOut', delay: 0.5 },
+              y: { duration: 4.2, repeat: Infinity, ease: 'easeInOut', delay: 0.5 },
+              scale: { duration: 4.2, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }
+            }}
+            className="hidden xl:block absolute top-1/2 -translate-y-1/2 -right-72 2xl:-right-88 w-52 2xl:w-60 pointer-events-none select-none filter drop-shadow-[0_15px_35px_rgba(239,68,68,0.3)] z-0"
+          >
+            <img
+              src={hephaestusImg}
+              alt="Hephaestus"
+              className="w-full h-auto object-contain"
+            />
+          </motion.div>
+
+          {/* Mobile Statue Watermarks for error page */}
+          <motion.div
+            animate={{ opacity: [0.55, 0.85, 0.55] }}
+            transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+            className="xl:hidden fixed top-1/4 -translate-y-1/2 left-0 w-44 sm:w-56 pointer-events-none filter drop-shadow-[0_10px_30px_rgba(239,68,68,0.4)] z-0"
+          >
+            <img src={athenaImg} alt="Athena Watermark" className="w-full h-auto object-contain" />
+          </motion.div>
+          <motion.div
+            animate={{ opacity: [0.55, 0.85, 0.55] }}
+            transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
+            className="xl:hidden fixed top-3/4 -translate-y-1/2 right-0 w-44 sm:w-56 pointer-events-none filter drop-shadow-[0_10px_30px_rgba(239,68,68,0.4)] z-0"
+          >
+            <img src={hephaestusImg} alt="Hephaestus Watermark" className="w-full h-auto object-contain" />
+          </motion.div>
+
+          {/* Error Card */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.92, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="w-full bg-zinc-950/25 backdrop-blur-xl rounded-3xl p-8 sm:p-10 border border-red-500/35 text-center space-y-7 shadow-[0_25px_60px_rgba(0,0,0,0.85)] shadow-red-500/10 relative z-10 overflow-hidden"
+          >
+            {/* Top Red Metallic Shimmer Line */}
+            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-red-500/0 via-red-500 to-red-500/0" />
+
+            {/* Prominent Credify Logo Badge */}
+            <div className="flex flex-col items-center justify-center pt-2">
+              <div className="relative p-3.5 sm:p-4 rounded-2xl bg-zinc-950/40 backdrop-blur-md border border-zinc-800/80 shadow-xl flex flex-row items-center gap-3">
+                <img
+                  src={credifyWithoutCelestiusTextLogo}
+                  alt="Credify Logo"
+                  className="h-10 sm:h-14 w-auto object-contain drop-shadow-[0_0_20px_rgba(250,204,21,0.3)]"
+                />
+                <div className="flex items-center border-l border-zinc-700/80 pl-3 py-0.5">
+                  <div className="flex items-center text-xs font-extrabold tracking-[0.25em] text-[#FACC15] uppercase font-mono whitespace-nowrap drop-shadow-[0_2px_10px_rgba(250,204,21,0.3)]">
+                    {'by CELESTIUS'.split('').map((char, index) => (
+                      <motion.span
+                        key={index}
+                        animate={{ y: [0, -3, 0] }}
+                        transition={{
+                          duration: 3.6,
+                          repeat: Infinity,
+                          ease: 'easeInOut',
+                          delay: index * 0.15,
+                        }}
+                        className="inline-block"
+                      >
+                        {char === ' ' ? '\u00A0' : char}
+                      </motion.span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Red Alert Icon with Continuous Multi-Layer Animation */}
+            <div className="relative w-20 h-20 mx-auto flex items-center justify-center my-1">
+              {/* Outer Pulsing Glow Ring */}
+              <motion.div
+                animate={{
+                  scale: [1, 1.25, 1],
+                  opacity: [0.3, 0.7, 0.3],
+                }}
+                transition={{
+                  duration: 2.5,
+                  repeat: Infinity,
+                  ease: 'easeInOut',
+                }}
+                className="absolute inset-0 rounded-2xl bg-red-500/20 border border-red-500/40"
+              />
+              {/* Middle Rotating Dashed Beacon */}
+              <div className="absolute -inset-1.5 rounded-2xl border border-dashed border-red-500/35 animate-[spin_10s_linear_infinite]" />
+              {/* Inner Core Icon Badge */}
+              <motion.div
+                animate={{
+                  scale: [0.96, 1.04, 0.96],
+                }}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                  ease: 'easeInOut',
+                }}
+                className="w-16 h-16 rounded-2xl bg-red-500/15 border border-red-500/50 flex items-center justify-center text-red-400 shadow-[0_0_30px_rgba(239,68,68,0.35)] relative z-10"
+              >
+                <AlertOctagon className="w-8 h-8 text-red-400 drop-shadow-[0_0_12px_rgba(239,68,68,0.8)]" />
+              </motion.div>
+            </div>
+
+            {/* Header Title & ID Badge */}
+            <div className="space-y-2.5">
+              <h1 className="text-2xl font-black font-['Outfit'] text-white tracking-wide">
+                Invalid Credential Record
+              </h1>
+              <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-red-500/10 border border-red-500/30 text-red-300 text-xs font-mono font-bold tracking-wider">
+                <span>ID: {credentialId || 'UNSPECIFIED'}</span>
+              </div>
+              <p className="text-xs text-zinc-400 max-w-sm mx-auto leading-relaxed pt-1">
+                The requested credential could not be authenticated in the official Club Celestius registry database.
+              </p>
+            </div>
+
+            {/* Possible Reasons Card */}
+            <div className="p-4 sm:p-5 rounded-2xl bg-zinc-950/30 backdrop-blur-sm border border-zinc-800/60 text-xs text-zinc-300 text-left space-y-2.5">
+              <div className="flex items-center gap-2 text-red-400 font-bold tracking-wide uppercase text-[11px]">
+                <AlertTriangle className="w-4 h-4 shrink-0" />
+                <span>Possible Reasons</span>
+              </div>
+              <ul className="space-y-1.5 text-[11px] text-zinc-400 list-disc list-inside">
+                <li>The Credential ID was mistyped, incomplete, or modified.</li>
+                <li>The credential record was revoked or updated by event organizers.</li>
+                <li>The URL parameter does not match any registered participant record.</li>
+              </ul>
+            </div>
+          </motion.div>
+        </div>
       </div>
     );
   }
@@ -397,9 +692,7 @@ export const PublicCredentialPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[#09090B] text-white flex flex-col justify-between p-4 sm:p-8 relative overflow-x-hidden">
-      {/* Background Yellow & Amber Gradients */}
-      <div className="absolute top-0 right-1/4 w-[700px] h-[700px] bg-yellow-500/10 rounded-full blur-[160px] pointer-events-none" />
-      <div className="absolute bottom-0 left-1/4 w-[600px] h-[600px] bg-amber-500/10 rounded-full blur-[160px] pointer-events-none" />
+      <AnimatedBackground />
 
       {/* Mobile-Only Background Watermarks */}
       <motion.div
