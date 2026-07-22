@@ -36,7 +36,7 @@ export const CelestiusStandardEntryPass: React.FC<TemplateProps> = ({
   return (
     <div
       id="pass-card-template-render"
-      className="relative w-full max-w-2xl bg-[#090D16] text-slate-100 p-6 sm:p-7 rounded-3xl shadow-2xl border border-amber-500/30 overflow-hidden font-sans select-none flex flex-col justify-between mx-auto min-h-[380px]"
+      className="relative w-full h-full bg-[#090D16] text-slate-100 p-6 sm:p-7 rounded-3xl shadow-2xl border border-amber-500/30 overflow-hidden font-sans select-none flex flex-col justify-between mx-auto"
       style={{ boxSizing: 'border-box' }}
     >
       {/* Inner Decorative Border */}

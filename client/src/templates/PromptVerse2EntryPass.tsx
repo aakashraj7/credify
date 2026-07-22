@@ -41,7 +41,7 @@ export const PromptVerse2EntryPass: React.FC<TemplateProps> = ({
   return (
     <div
       id="pass-card-template-render"
-      className="relative w-full max-w-2xl bg-[#07090C] text-slate-100 p-6 sm:p-7 rounded-3xl shadow-2xl border border-slate-800/80 overflow-hidden font-sans select-none flex flex-col justify-between mx-auto min-h-[380px]"
+      className="relative w-full h-full bg-[#07090C] text-slate-100 p-6 sm:p-7 rounded-3xl shadow-2xl border border-slate-800/80 overflow-hidden font-sans select-none flex flex-col justify-between mx-auto"
       style={{ boxSizing: 'border-box' }}
     >
       {/* Inner Decorative Border */}
